@@ -1,10 +1,11 @@
 %define name libvorbis
-%define version 1.1.2
+%define version 1.2.0
 %define release %mkrel 1
 %define theirversion %version
 %define lib_name_orig libvorbis
 %define lib_major 0
-%define lib_name %mklibname vorbis %{lib_major}
+%define libname %mklibname vorbis %{lib_major}
+%define libnamedev %mklibname -d vorbis
 %define lib_enc_major 2
 %define lib_enc_name %mklibname vorbisenc %{lib_enc_major}
 %define lib_file_major 3
@@ -34,21 +35,21 @@ and variable bitrates from 16 to 128 kbps/channel.
 
 Find some free Ogg Vorbis music here: http://www.vorbis.com/music.html
 
-%package -n %{lib_name}
+%package -n %{libname}
 Summary: Main library for %{name}
 Group: System/Libraries
 Obsoletes: oggvorbis
 Provides: oggvorbis = %{version}-%{release}
 Provides: %{name} = %{version}-%{release}
 
-%description -n %{lib_name}
+%description -n %{libname}
 This package contains the library needed to run programs dynamically
 linked with %{name}.
 
-%package -n %{lib_name}-devel
+%package -n %{libnamedev}
 Summary: Headers for developing programs that will use %{name}
 Group: Development/C
-Requires: %{lib_name} = %{version}
+Requires: %{libname} = %{version}
 Requires: %{lib_enc_name} = %{version}
 Requires: %{lib_file_name} = %{version}
 Requires: libogg-devel >= %{oggver}
@@ -56,8 +57,9 @@ Provides: %{lib_name_orig}-devel = %{version}-%{release}
 Provides: %{name}%{lib_major}-devel = %{version}-%{release}
 Obsoletes: oggvorbis-devel
 Provides: oggvorbis-devel = %{version}-%{release}
+Obsoletes: %mklibname -d vorbis 0
 
-%description -n %{lib_name}-devel
+%description -n %{libnamedev}
 This package contains the headers that programmers will need to develop
 applications which will use %{name}.
 
@@ -72,7 +74,7 @@ encoder capability of %{name}.
 %package -n %{lib_file_name}
 Summary: File operations specialized library for %{name}
 Group: System/Libraries
-Requires: %{lib_name} = %{version}
+Requires: %{libname} = %{version}
 
 %description -n %{lib_file_name}
 This package contains the library needed for some programs using the
@@ -101,28 +103,28 @@ mv $RPM_BUILD_ROOT/%{_datadir}/doc installed-docs
 %clean 
 rm -rf $RPM_BUILD_ROOT
 
-%post -n %{lib_name} -p /sbin/ldconfig
+%post -n %{libname} -p /sbin/ldconfig
 %post -n %{lib_enc_name} -p /sbin/ldconfig
 %post -n %{lib_file_name} -p /sbin/ldconfig
 
-%postun -n %{lib_name} -p /sbin/ldconfig
+%postun -n %{libname} -p /sbin/ldconfig
 %postun -n %{lib_enc_name} -p /sbin/ldconfig
 %postun -n %{lib_file_name} -p /sbin/ldconfig
 
-%files -n %{lib_name}
+%files -n %{libname}
 %defattr(-,root,root)
 %doc COPYING AUTHORS README
-%{_libdir}/%{lib_name_orig}.so.*
+%{_libdir}/%{lib_name_orig}.so.%{lib_major}*
 
 %files -n %{lib_enc_name}
 %defattr(-,root,root)
-%{_libdir}/%{lib_name_orig}enc.so.*
+%{_libdir}/%{lib_name_orig}enc.so.%{lib_enc_major}*
 
 %files -n %{lib_file_name}
 %defattr(-,root,root)
-%{_libdir}/%{lib_name_orig}file.so.*
+%{_libdir}/%{lib_name_orig}file.so.%{lib_file_major}*
 
-%files -n %{lib_name}-devel
+%files -n %{libnamedev}
 %defattr(-,root,root)
 %doc installed-docs
 %{_includedir}/vorbis

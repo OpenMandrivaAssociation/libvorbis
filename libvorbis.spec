@@ -22,7 +22,6 @@ URL: http://www.xiph.org/
 Source:	http://downloads.xiph.org/releases/vorbis/%{name}-%{theirversion}.tar.bz2
 Patch0: libvorbis-1.0rc3-fix-optflags.patch
 Patch1: libvorbis-1.0-lib64.patch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: libogg-devel >= %oggver
 BuildRequires: glibc-static-devel
 #gw: if patched

@@ -1,6 +1,6 @@
 %define name libvorbis
 %define version 1.2.0
-%define release %mkrel 1
+%define release %mkrel 2
 %define theirversion %version
 %define lib_name_orig libvorbis
 %define lib_major 0

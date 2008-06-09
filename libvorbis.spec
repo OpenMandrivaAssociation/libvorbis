@@ -108,13 +108,25 @@ mv $RPM_BUILD_ROOT/%{_datadir}/doc installed-docs
 %clean 
 rm -rf $RPM_BUILD_ROOT
 
+%if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
+%endif
+%if %mdkversion < 200900
 %post -n %{lib_enc_name} -p /sbin/ldconfig
+%endif
+%if %mdkversion < 200900
 %post -n %{lib_file_name} -p /sbin/ldconfig
+%endif
 
+%if %mdkversion < 200900
 %postun -n %{libname} -p /sbin/ldconfig
+%endif
+%if %mdkversion < 200900
 %postun -n %{lib_enc_name} -p /sbin/ldconfig
+%endif
+%if %mdkversion < 200900
 %postun -n %{lib_file_name} -p /sbin/ldconfig
+%endif
 
 %files -n %{libname}
 %defattr(-,root,root)

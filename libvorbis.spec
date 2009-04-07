@@ -27,8 +27,6 @@ Patch4: libvorbis-r14602-CVE-2008-1423.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: libogg-devel >= %oggver
 BuildRequires: glibc-static-devel
-#gw: if patched
-BuildRequires: automake1.7
 
 %description
 Ogg Vorbis is a fully open, non-proprietary, patent-and-royalty-free,
@@ -92,11 +90,9 @@ file operations capability of %{name}.
 # Regenerate aclocal.m4 to get the system ogg.m4.
 # (aka don't use the package XIPH_PATH_OGG macro)
 perl -ni -e "/^AC_DEFUN.XIPH_PATH_OGG/ .. /^\]\)$/ or print" acinclude.m4
-aclocal-1.7
-WANT_AUTOCONF_2_5=1 autoconf
-automake-1.7 -a -c
 
 %build
+autoreconf -fi
 %configure2_5x
 make
 

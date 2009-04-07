@@ -19,7 +19,7 @@ Group: System/Libraries
 License: BSD
 URL: http://www.xiph.org/
 Source:	http://downloads.xiph.org/releases/vorbis/%{name}-%{theirversion}.tar.bz2
-Patch0: libvorbis-1.0rc3-fix-optflags.patch
+Patch0: libvorbis-1.2.0-fix-optflags.patch
 Patch1: libvorbis-1.0-lib64.patch
 Patch2: libvorbis-r14598-CVE-2008-1420.patch
 Patch3: libvorbis-r14602-CVE-2008-1419.patch
@@ -84,7 +84,7 @@ file operations capability of %{name}.
 
 %prep
 %setup -q -n %{name}-%{theirversion}
-%patch0 -p0
+%patch0 -p0 -b .opt
 %patch1 -p1 -b .lib64
 %patch2
 %patch3

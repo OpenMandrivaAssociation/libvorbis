@@ -1,5 +1,5 @@
 %define name libvorbis
-%define version 1.2.0
+%define version 1.2.3
 %define theirversion %version
 %define lib_name_orig libvorbis
 %define lib_major 0
@@ -14,7 +14,7 @@
 Name: %{name}
 Summary: The Vorbis General Audio Compression Codec
 Version: %{version}
-Release: %mkrel 5
+Release: %mkrel 1
 Group: System/Libraries
 License: BSD
 URL: http://www.xiph.org/
@@ -145,5 +145,3 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.*a
 %{_datadir}/aclocal/vorbis.m4
 %{_libdir}/pkgconfig/*
-
-

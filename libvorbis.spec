@@ -14,7 +14,7 @@
 Name:		%{name}
 Summary:	The Vorbis General Audio Compression Codec
 Version:	%{version}
-Release:	%mkrel 1
+Release:	%mkrel 2
 Group:		System/Libraries
 License:	BSD
 URL:		http://www.xiph.org/

@@ -1,5 +1,5 @@
 %define name libvorbis
-%define version 1.3.2
+%define version 1.3.3
 %define theirversion %version
 %define lib_name_orig libvorbis
 %define lib_major 0
@@ -14,14 +14,13 @@
 Name:		%{name}
 Summary:	The Vorbis General Audio Compression Codec
 Version:	%{version}
-Release:	%mkrel 2
+Release:	1
 Group:		System/Libraries
 License:	BSD
 URL:		http://www.xiph.org/
-Source:		http://downloads.xiph.org/releases/vorbis/%{name}-%{theirversion}.tar.bz2
+Source:		http://downloads.xiph.org/releases/vorbis/%{name}-%{theirversion}.tar.gz
 BuildRequires:	libogg-devel >= %oggver
 BuildRequires:	glibc-static-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 Ogg Vorbis is a fully open, non-proprietary, patent-and-royalty-free,
@@ -86,49 +85,22 @@ sed -i "s/-O20/$CFLAGS/" configure
 %install
 rm -rf %{buildroot} installed-docs
 %makeinstall_std
+rm -rf %buildroot/%{_libdir}/*.*a
 mv %{buildroot}/%{_datadir}/doc installed-docs
 
-%clean 
-rm -rf %{buildroot}
-
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%post -n %{lib_enc_name} -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%post -n %{lib_file_name} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%postun -n %{lib_enc_name} -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%postun -n %{lib_file_name} -p /sbin/ldconfig
-%endif
-
 %files -n %{libname}
-%defattr(-,root,root)
 %doc AUTHORS README
 %{_libdir}/%{lib_name_orig}.so.%{lib_major}*
 
 %files -n %{lib_enc_name}
-%defattr(-,root,root)
 %{_libdir}/%{lib_name_orig}enc.so.%{lib_enc_major}*
 
 %files -n %{lib_file_name}
-%defattr(-,root,root)
 %{_libdir}/%{lib_name_orig}file.so.%{lib_file_major}*
 
 %files -n %{libnamedev}
-%defattr(-,root,root)
 %doc installed-docs
 %{_includedir}/vorbis
 %{_libdir}/*.so
-%{_libdir}/*.*a
 %{_datadir}/aclocal/vorbis.m4
 %{_libdir}/pkgconfig/*

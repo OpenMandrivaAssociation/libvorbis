@@ -14,7 +14,7 @@
 Name:		%{name}
 Summary:	The Vorbis General Audio Compression Codec
 Version:	%{version}
-Release:	1
+Release:	2
 Group:		System/Libraries
 License:	BSD
 URL:		http://www.xiph.org/
@@ -85,7 +85,9 @@ sed -i "s/-O20/$CFLAGS/" configure
 %install
 rm -rf %{buildroot} installed-docs
 %makeinstall_std
+%if %mdvver >= 201200
 rm -rf %buildroot/%{_libdir}/*.*a
+%endif
 mv %{buildroot}/%{_datadir}/doc installed-docs
 
 %files -n %{libname}
@@ -102,5 +104,8 @@ mv %{buildroot}/%{_datadir}/doc installed-docs
 %doc installed-docs
 %{_includedir}/vorbis
 %{_libdir}/*.so
+%if %mdvver < 201200
+%{_libdir}/*.*a
+%endif
 %{_datadir}/aclocal/vorbis.m4
 %{_libdir}/pkgconfig/*

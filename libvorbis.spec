@@ -5,6 +5,7 @@
 %define lib_major 0
 %define libname %mklibname vorbis %{lib_major}
 %define libnamedev %mklibname -d vorbis
+%define libnamedevstatic %mklibname -d -s vorbis
 %define lib_enc_major 2
 %define lib_enc_name %mklibname vorbisenc %{lib_enc_major}
 %define lib_file_major 3
@@ -14,11 +15,11 @@
 Name:		%{name}
 Summary:	The Vorbis General Audio Compression Codec
 Version:	%{version}
-Release:	2
+Release:	3
 Group:		System/Libraries
 License:	BSD
 URL:		http://www.xiph.org/
-Source:		http://downloads.xiph.org/releases/vorbis/%{name}-%{theirversion}.tar.gz
+Source0:	http://downloads.xiph.org/releases/vorbis/%{name}-%{theirversion}.tar.gz
 BuildRequires:	libogg-devel >= %oggver
 BuildRequires:	glibc-static-devel
 
@@ -39,6 +40,16 @@ Provides:	%{name} = %{version}-%{release}
 %description -n %{libname}
 This package contains the library needed to run programs dynamically
 linked with %{name}.
+
+
+%package -n %{libnamedevstatic}
+Summary:	Headers for developing programs that will use %{name}
+Group:		Development/C
+Provides:	oggvorbis-devel-static = %{version}-%{release}
+Requires:	libogg-devel >= %{oggver}
+Requires:	oggvorbis-devel = %{version}-%{release}
+
+
 
 %package -n %{libnamedev}
 Summary:	Headers for developing programs that will use %{name}
@@ -86,7 +97,7 @@ sed -i "s/-O20/$CFLAGS/" configure
 rm -rf %{buildroot} installed-docs
 %makeinstall_std
 %if %mdvver >= 201200
-rm -rf %buildroot/%{_libdir}/*.*a
+rm -rf %buildroot/%{_libdir}/*.la
 %endif
 mv %{buildroot}/%{_datadir}/doc installed-docs
 
@@ -109,3 +120,6 @@ mv %{buildroot}/%{_datadir}/doc installed-docs
 %endif
 %{_datadir}/aclocal/vorbis.m4
 %{_libdir}/pkgconfig/*
+
+%files -n %{libnamedevstatic}
+%{_libdir}/*.a

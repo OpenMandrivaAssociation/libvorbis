@@ -49,6 +49,9 @@ Provides:	oggvorbis-devel-static = %{version}-%{release}
 Requires:	libogg-devel >= %{oggver}
 Requires:	oggvorbis-devel = %{version}-%{release}
 
+%description -n %{libnamedevstatic}
+This package contains the headers that programmers will need to develop
+applications which will use %{name}.
 
 
 %package -n %{libnamedev}

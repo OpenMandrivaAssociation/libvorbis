@@ -89,6 +89,13 @@ file operations capability of %{name}.
 %setup -q -n %{name}-%{theirversion}
 
 %build
+#fix build with new automake
+sed -i -e 's,AM_CONFIG_HEADER,AC_CONFIG_HEADERS,g' configure.*
+libtoolize --install --copy --force --automake
+aclocal -I m4
+autoconf -I m4
+autoheader -I m4
+automake --add-missing --copy --foreign
 sed -i "s/-O20/$CFLAGS/" configure
 %configure2_5x
 %make

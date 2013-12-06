@@ -11,7 +11,7 @@
 Summary:	The Vorbis General Audio Compression Codec
 Name:		libvorbis
 Version:	1.3.3
-Release:	6
+Release:	7
 Group:		System/Libraries
 License:	BSD
 Url:		http://www.xiph.org/

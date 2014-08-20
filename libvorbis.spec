@@ -74,7 +74,11 @@ automake --add-missing --copy --foreign
 sed -i "s/-O20/$CFLAGS/" configure
 
 %build
-%configure2_5x --disable-static
+# (tpg) silent clang
+export CFLAGS="%{optflags} -Qunused-arguments"
+export CPPFLAGS="%{optflags} -Qunused-arguments"
+
+%configure --disable-static
 %make
 
 %install

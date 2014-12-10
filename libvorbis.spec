@@ -75,8 +75,7 @@ sed -i "s/-O20/$CFLAGS/" configure
 
 %build
 # (tpg) silent clang
-export CFLAGS="%{optflags} -Qunused-arguments"
-export CPPFLAGS="%{optflags} -Qunused-arguments"
+%global optflags %{optflags} -Qunused-arguments
 
 %configure --disable-static
 %make

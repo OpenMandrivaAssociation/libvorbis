@@ -66,12 +66,14 @@ applications which will use %{name}.
 %setup -q
 #fix build with new automake
 sed -i -e 's,AM_CONFIG_HEADER,AC_CONFIG_HEADERS,g' configure.*
+# drop weird flags
+sed -i 's/-O20/$CFLAGS/' configure.ac
+sed -i 's!-mno-ieee-fp!!g' configure.ac
 libtoolize --install --copy --force --automake
 aclocal -I m4
 autoconf -I m4
 autoheader -I m4
 automake --add-missing --copy --foreign
-sed -i "s/-O20/$CFLAGS/" configure
 
 %build
 # (tpg) silent clang

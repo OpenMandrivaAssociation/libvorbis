@@ -10,8 +10,8 @@
 
 Summary:	The Vorbis General Audio Compression Codec
 Name:		libvorbis
-Version:	1.3.5
-Release:	4
+Version:	1.3.6
+Release:	1
 Group:		System/Libraries
 License:	BSD
 Url:		http://www.xiph.org/
@@ -20,7 +20,7 @@ BuildRequires:	pkgconfig(ogg)
 
 %description
 Ogg Vorbis is a fully open, non-proprietary, patent-and-royalty-free,
-general-purpose compressed audio format for audio and music at fixed 
+general-purpose compressed audio format for audio and music at fixed
 and variable bitrates from 16 to 128 kbps/channel.
 
 Find some free Ogg Vorbis music here: http://www.vorbis.com/music.html
@@ -87,7 +87,7 @@ automake --add-missing --copy --foreign
 mv %{buildroot}/%{_datadir}/doc installed-docs
 
 %files -n %{libname}
-%doc AUTHORS README
+%doc AUTHORS
 %{_libdir}/libvorbis.so.%{major}*
 
 %files -n %{libenc}

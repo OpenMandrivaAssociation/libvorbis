@@ -8,10 +8,15 @@
 %define filemaj 3
 %define libfile %mklibname vorbisfile %{filemaj}
 
+%global optflags %{optflags} -O3 -Qunused-arguments
+
+# (tpg) enable PGO build
+%bcond_without pgo
+
 Summary:	The Vorbis General Audio Compression Codec
 Name:		libvorbis
 Version:	1.3.6
-Release:	4
+Release:	5
 Group:		System/Libraries
 License:	BSD
 Url:		http://www.xiph.org/
@@ -63,7 +68,8 @@ This package contains the headers that programmers will need to develop
 applications which will use %{name}.
 
 %prep
-%setup -q
+%autosetup -p1
+
 #fix build with new automake
 sed -i -e 's,AM_CONFIG_HEADER,AC_CONFIG_HEADERS,g' configure.*
 # drop weird flags
@@ -76,14 +82,33 @@ autoheader -I m4
 automake --add-missing --copy --foreign
 
 %build
-# (tpg) silent clang
-%global optflags %{optflags} -Qunused-arguments
-
+%if %{with pgo}
+export LLVM_PROFILE_FILE=%{name}-%p.profile.d
+export LD_LIBRARY_PATH="$(pwd)"
+CFLAGS="%{optflags} -fprofile-instr-generate" \
+CXXFLAGS="%{optflags} -fprofile-instr-generate" \
+FFLAGS="$CFLAGS_PGO" \
+FCFLAGS="$CFLAGS_PGO" \
+LDFLAGS="%{ldflags} -fprofile-instr-generate" \
 %configure --disable-static
-%make
+%make_build
+
+make LIBS=-lm check -j1
+unset LD_LIBRARY_PATH
+unset LLVM_PROFILE_FILE
+llvm-profdata merge --output=%{name}.profile *.profile.d
+
+make clean
+
+CFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+CXXFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+%endif
+%configure --disable-static
+%make_build
 
 %install
-%makeinstall_std
+%make_install
 mv %{buildroot}/%{_datadir}/doc installed-docs
 
 %files -n %{libname}

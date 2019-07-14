@@ -8,7 +8,9 @@
 %define filemaj 3
 %define libfile %mklibname vorbisfile %{filemaj}
 
+%ifnarch %riscv
 %global optflags %{optflags} -O3 -Qunused-arguments
+%endif
 
 # (tpg) enable PGO build
 %bcond_without pgo

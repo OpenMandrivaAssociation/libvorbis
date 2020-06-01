@@ -1,15 +1,24 @@
+# libvorbis is used by libsndfile, libsndfile is used by wine
+%ifarch %{x86_64}
+%bcond_without compat32
+%endif
+
 %define major 0
 %define libname %mklibname vorbis %{major}
 %define devname %mklibname -d vorbis
+%define lib32name %mklib32name vorbis %{major}
+%define dev32name %mklib32name -d vorbis
 
 %define encmaj 2
 %define libenc %mklibname vorbisenc %{encmaj}
+%define lib32enc %mklib32name vorbisenc %{encmaj}
 
 %define filemaj 3
 %define libfile %mklibname vorbisfile %{filemaj}
+%define lib32file %mklib32name vorbisfile %{filemaj}
 
 %ifnarch %riscv
-%global optflags %{optflags} -O3 -Qunused-arguments
+%global optflags %{optflags} -O3
 %endif
 
 # (tpg) enable PGO build
@@ -18,12 +27,15 @@
 Summary:	The Vorbis General Audio Compression Codec
 Name:		libvorbis
 Version:	1.3.6
-Release:	7
+Release:	8
 Group:		System/Libraries
 License:	BSD
 Url:		http://www.xiph.org/
 Source0:	http://downloads.xiph.org/releases/vorbis/%{name}-%{version}.tar.gz
 BuildRequires:	pkgconfig(ogg)
+%if %{with compat32}
+BuildRequires:	devel(libogg)
+%endif
 
 %description
 Ogg Vorbis is a fully open, non-proprietary, patent-and-royalty-free,
@@ -69,9 +81,46 @@ Provides:	%{name}-devel = %{version}-%{release}
 This package contains the headers that programmers will need to develop
 applications which will use %{name}.
 
+%if %{with compat32}
+%package -n %{lib32name}
+Summary:	Main library for %{name} (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32name}
+This package contains the library needed to run programs dynamically
+linked with %{name}.
+
+%package -n %{lib32enc}
+Summary:	Encoder specialized library for %{name} (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32enc}
+This package contains the library needed for some programs using the
+encoder capability of %{name}.
+
+%package -n %{lib32file}
+Summary:	File operations specialized library for %{name} (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32file}
+This package contains the library needed for some programs using the
+file operations capability of %{name}.
+
+%package -n %{dev32name}
+Summary:	Headers for developing programs that will use %{name} (32-bit)
+Group:		Development/C
+Requires:	%{devname} = %{version}-%{release}
+Requires:	%{lib32name} = %{version}-%{release}
+Requires:	%{lib32enc} = %{version}-%{release}
+Requires:	%{lib32file} = %{version}-%{release}
+
+%description -n %{dev32name}
+This package contains the headers that programmers will need to develop
+applications which will use %{name}.
+%endif
+
 %prep
 %autosetup -p1
-
 #fix build with new automake
 sed -i -e 's,AM_CONFIG_HEADER,AC_CONFIG_HEADERS,g' configure.*
 # drop weird flags
@@ -84,6 +133,18 @@ autoheader -I m4
 automake --add-missing --copy --foreign
 
 %build
+export CONFIGURE_TOP="$(pwd)"
+
+%if %{with compat32}
+mkdir build32
+cd build32
+%configure32
+%make_build
+cd ..
+%endif
+
+mkdir build
+cd build
 %if %{with pgo}
 export LLVM_PROFILE_FILE=%{name}-%p.profile.d
 export LD_LIBRARY_PATH="$(pwd)"
@@ -110,7 +171,10 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 %make_build
 
 %install
-%make_install
+%if %{with compat32}
+%make_install -C build32
+%endif
+%make_install -C build
 mv %{buildroot}/%{_datadir}/doc installed-docs
 
 %files -n %{libname}
@@ -130,3 +194,17 @@ mv %{buildroot}/%{_datadir}/doc installed-docs
 %{_datadir}/aclocal/vorbis.m4
 %{_libdir}/pkgconfig/*
 
+%if %{with compat32}
+%files -n %{lib32name}
+%{_prefix}/lib/libvorbis.so.%{major}*
+
+%files -n %{lib32enc}
+%{_prefix}/lib/libvorbisenc.so.%{encmaj}*
+
+%files -n %{lib32file}
+%{_prefix}/lib/libvorbisfile.so.%{filemaj}*
+
+%files -n %{dev32name}
+%{_prefix}/lib/*.so
+%{_prefix}/lib/pkgconfig/*
+%endif

@@ -30,7 +30,7 @@ Version:	1.3.7
 Release:	3
 Group:		System/Libraries
 License:	BSD
-Url:		http://www.xiph.org/
+Url:		https://www.xiph.org/
 Source0:	http://downloads.xiph.org/releases/vorbis/%{name}-%{version}.tar.gz
 BuildRequires:	pkgconfig(ogg)
 %if %{with compat32}
